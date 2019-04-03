@@ -1,17 +1,17 @@
-.container {
-    background: yellow;
-    margin: auto;
-    padding-left: 80px;
-    border: 2px red solid;
-    font-family: Arial, Helvetica, sans-serif;
-    width: 50%;
+body{
+	background-color: yellow;
+	text-align: center;
 }
-#start{
-    background: black;
-    color: #fff;
-    font-size: 30px;
-    margin-top: 20px;
+
+.text-muted{
+	color: black;
 }
-h2 {
-    font-size: 50px;
+.last-seconds{
+  color: red;
+}
+.option{
+  margin: 15px;
+}
+#board{
+    background-color:palevioletred;
 }

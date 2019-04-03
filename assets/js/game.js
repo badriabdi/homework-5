@@ -1,105 +1,208 @@
-$(document).ready(function () {
 
 
-    var rightAnswers = 0;
-    var wrongAnswers = 0;
-    var unanswerQuestions = 0;
-    var questionIndex = 0;
 
 
-    var intervalId;
-    var clockRunning = false;
-    var time = 15;
-
-    $("#start").click(startTimer());
-    // This function will start  the questions
-    function startTimer() {
-        if (!clockRunning) {
-            time = 15;
-            intervalId = setInterval(decrement, 1000)
-            clockRunning = true;
-        }
-    };
-    // This funtion will decrease the time as the client answers the question than it stops when the time is equal 0
-
-    function decrement() {
-        time--;
-        $(".timer").text("<h1>" + time + "</h1>")
-        if (time === 0) {
-            stop();
-        }
-
-    };
-
-    // This function will stop t
-    function stop() {
-        clockRunning = false;
-        clearInterval(intervalId);
-
-
-    };
-    // the questions and the answers based on  index number of array
-    var questions = [{
-        question: "all time best soccer player?",
-        choices: ["Pele", "Maradona", "Ronaldo"],
-        answer: 0
+$(document).ready(function(){
+  
+    // event listeners
+    $("#remaining-time").hide();
+    $("#start").on('click', trivia.startGame);
+    $(document).on('click' , '.option', trivia.guessChecker);
+    
+  })
+  
+  var trivia = {
+    // trivia properties
+    correct: 0,
+    incorrect: 0,
+    unanswered: 0,
+    currentSet: 0,
+    timer: 20,
+    timerOn: false,
+    timerId : '',
+    // questions options and answers data
+    questions: {
+      q1: 'All time best soccer player?',
+      q2: 'All time best basketball player?',
+      q3: 'Who served the most years as united states president?',
+      q4: 'who served the most years as Fifa president ?',
+      q5: "What is the longest mountain range in the united states?",
+      q6: 'How many countries are in africa?',
+      q7: "Who thinks they're always the last to find out everything?"
     },
-    {
-        question: " longest serving fifa president?",
-        choices: ["Zidane", "Blatter", "Platini"],
-        answer: 1
-    }, {
-        question: " longest serving United States president?",
-        choices: ["George Washington", "Abraham Lincoln", "Roosevelt"],
-        answer: 2
-    }, {
+    options: {
+      q1: ['Pele', 'Maradona', 'Cristiano', 'Messi'],
+      q2: ['Jordan', 'Lebron', 'Curry', 'Durant'],
+      q3: ['Roosevelt', 'Obama', 'John F. Kennedy', 'George Washington'],
+      q4: ['pele', 'Maradona', 'Sepp Blatter', 'Messi'],
+      q5: ['Kiliminjaro','Rocky Mountains','Emily','Carol'],
+      q6: ['40','1','10','50'],
+      q7: ['Ross', 'Phoebe', 'Monica','Chandler']
+    },
+    answers: {
+      q1: 'Pele',
+      q2: 'Jordan',
+      q3: 'Roosevelt',
+      q4: 'Sepp Blatter',
+      q5: 'Rocky Mountain',
+      q6: '50',
+      q7: 'Phoebe'
+    },
+    
+    
+    startGame: function(){
+    
+      trivia.currentSet = 0;
+      trivia.correct = 0;
+      trivia.incorrect = 0;
+      trivia.unanswered = 0;
+      clearInterval(trivia.timerId);
+      
+      // show game section
+      $('#game').show();
+      
+      //  empty last results
+      $('#results').html('');
+      
+      // show timer
+      $('#timer').text(trivia.timer);
+      
+      // remove start button
+      $('#start').hide();
+  
+      $('#remaining-time').show();
+      
+      // ask first question
+      trivia.nextQuestion();
+      
+    },
+    // 
+    nextQuestion : function(){
+      
+      
+      trivia.timer = 10;
+       $('#timer').removeClass('last-seconds');
+      $('#timer').text(trivia.timer);
+      
+      
+      // to prevent timer speed up
+      if(!trivia.timerOn){
+        trivia.timerId = setInterval(trivia.timerRunning, 1000);
+      }
+      
+      // gets all the questions then indexes the current questions
+      var questionContent = Object.values(trivia.questions)[trivia.currentSet];
+      $('#question').text(questionContent);
+      
+      // an array of all the user options for the current question
+      var questionOptions = Object.values(trivia.options)[trivia.currentSet];
+      
+      // creates all the trivia guess options in the html
+      $.each(questionOptions, function(index, key){
+        $('#options').append($('<button class="option btn btn-info btn-lg">'+key+'</button>'));
+      })
+      
+    },
+    // method to decrement counter and count unanswered if timer runs out
+    timerRunning : function(){
+      
+      if(trivia.timer > -1 && trivia.currentSet < Object.keys(trivia.questions).length){
+        $('#timer').text(trivia.timer);
+        trivia.timer--;
+          if(trivia.timer === 4){
+            $('#timer').addClass('last-seconds');
+          }
+      }
+      
+      else if(trivia.timer === -1){
+        trivia.unanswered++;
+        trivia.result = false;
+        clearInterval(trivia.timerId);
+        resultId = setTimeout(trivia.guessResult, 1000);
+        $('#results').html('<h3>Out of time! The answer was '+ Object.values(trivia.answers)[trivia.currentSet] +'</h3>');
+      }
+      
+      else if(trivia.currentSet === Object.keys(trivia.questions).length){
+        
+        
+        $('#results')
+          .html('<h3>Thank you for playing!</h3>'+
+          '<p>Correct: '+ trivia.correct +'</p>'+
+          '<p>Incorrect: '+ trivia.incorrect +'</p>'+
+          '<p>Unaswered: '+ trivia.unanswered +'</p>'+
+          '<p>Please play again!</p>');
+        
+        
+        $('#game').hide();
+        
+        
+        $('#start').show();
+      }
+      
+    },
+    
+    guessChecker : function() {
+      
+      
+      var resultId;
+      
+      
+      var currentAnswer = Object.values(trivia.answers)[trivia.currentSet];
+      
+      
+      if($(this).text() === currentAnswer){
+        
+        $(this).addClass('btn-success').removeClass('btn-info');
+        
+        trivia.correct++;
+        clearInterval(trivia.timerId);
+        resultId = setTimeout(trivia.guessResult, 1000);
+        $('#results').html('<h3>Correct Answer!</h3>');
+      }
+      
+      else{
+        
+        $(this).addClass('btn-danger').removeClass('btn-info');
+        
+        trivia.incorrect++;
+        clearInterval(trivia.timerId);
+        resultId = setTimeout(trivia.guessResult, 1000);
+        $('#results').html('<h3>Better luck next time! '+ currentAnswer +'</h3>');
+      }
+      
+    },
+    
+    guessResult : function(){
+      
+      
+      trivia.currentSet++;
+      
+      
+      $('.option').remove();
+      $('#results h3').remove();
+      
+      // begin next question
+      trivia.nextQuestion();
+       
+    }
+  
+  }
+  
 
-        question: " best selling book of all time?",
-        choices: ["Think like man", "Harry Potter", "The Genes"],
-        answer: 1
-
-
-
-    }];
-
-    function afterQuestion(after) {
-        for (var i = 0; i < questions.length; i++) {
-            // if (questionIndex < questions.length) {
-
-            $(".questions").append("<h1>" + questions[i].question + "</h1>");
-            for (var j = 0; j < questions[i].choices.length; j++) {
-                var newDiv = $("<div>");
-                newDiv.addClass("choices").attr("numIndex", i).text(questions[i].choices[j]);
-                $(".questions").append(newDiv);
-            }
-
-
-
-        }
-
-        $(".happy").on("click", function () {
-            var userChoice = parseInt($(this).att("numIndex"));
-            if (userChoice === questions[questionIndex].answer) {
-                rightAnswers++;
-
-            } else {
-                wrongAnswers++;
-
-            }
-            questionIndex++;
-        });
 
 
 
 
-    };
 
 
 
-    afterQuestion(questionIndex);
-    $(".correct").html("<h1>" + rightAnswers + "<h1>");
-    $(".incorrect").html("<h1>" + wrongAnswers + "<h1>");
 
 
 
-});
+
+
+
+
+
+
+

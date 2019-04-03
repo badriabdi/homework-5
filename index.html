@@ -1,150 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <title>Trivia Game</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="/Users/Jaymar/SMU_HW/week5/TriviaGame/assets/css/style.css"> -->
+    <link rel="stylesheet" href="./assets/css/style.css">
+
+    <link rel="icon" type="image/gif" href="./assets/images/IMG_3456.jpg"/>
+
+    <!-- Custom styles for this template -->
+<!--    <link href="jumbotron-narrow.css" rel="stylesheet">-->
+
+  </head>
+
+  <body>
+  
     
-</head>
+   
+    <div class="container">
+      <div class="header text-center clearfix">
+        <h1 class="text-muted"> Trivia game</h1>
+      </div>
+      <div class="jumbotron jumbotron-fluid" id="board">
+        <div class="container">
+        <div id="game">
+          <h2> Trivia Game</h2>
+          <p id="remaining-time" class="lead">Remaining Time: <span id="timer"></span></p>
+          <p id="question" class="lead"></p>
+        </div>
+        <div id="results">
+        </div>
+      </div>
+
+      <div class="row">
+        <div id="choices" class="text-center">
+          <button id="start" class="btn btn-info btn-lg">Start Game</button>
+          <div id="options">
+            
+          </div>
+          
+        </div>
+      </div>
+
+    </div> <!-- /container -->
+
+    <!-- jQuery CDN-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- Bootstrap CDN -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <!-- TRIVIA APP JS -->
+    <script src="./assets/js/game.js"></script>  
 
 
-<body>
-
-<div class="container">
-    <h2>Trivia Game!</h2>
-
-    <div class="timer"></div>
-    <div class="questions"></div>
-    <button id="start">start</button>
-    <div class="correct"></div>
-    <div class="incorrect"></div>
-    <div class="unanswered"></div>
-
-    
-      
-
-</div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script type="text/javascript">
-
-$(document).ready(function () {
-
-
-var rightAnswers = 0;
-var wrongAnswers = 0;
-var unanswerQuestions = 0;
-var questionIndex = 0;
-
-
-var intervalId;
-var clockRunning = false;
-var time = 15;
-
-$("#start").click(startTimer());
-// This function will start  the questions
-function startTimer() {
-    if (!clockRunning) {
-        time = 15;
-        intervalId = setInterval(decrement, 1000)
-        clockRunning = true;
-    }
-};
-// This funtion will decrease the time as the client answers the question than it stops when the time is equal 0
-
-function decrement() {
-    time--;
-    $(".timer").text("<h1>" + time + "</h1>")
-    if (time === 0) {
-        stop();
-    }
-
-};
-
-// This function will stop t
-function stop() {
-    clockRunning = false;
-    clearInterval(intervalId);
-
-
-};
-// the questions and the answers based on  index number of array
-var questions = [{
-    question: "all time best soccer player?",
-    choices: ["Pele", "Maradona", "Ronaldo"],
-    answer: 0
-},
-{
-    question: " longest serving fifa president?",
-    choices: ["Zidane", "Blatter", "Platini"],
-    answer: 1
-}, {
-    question: " longest serving United States president?",
-    choices: ["George Washington", "Abraham Lincoln", "Roosevelt"],
-    answer: 2
-}, {
-
-    question: " best selling book of all time?",
-    choices: ["Think like man", "Harry Potter", "The Genes"],
-    answer: 1
-
-
-
-}];
-
-function afterQuestion(after) {
-    for (var i = 0; i < questions.length; i++) {
-        // if (questionIndex < questions.length) {
-
-        $(".questions").append("<h1>" + questions[i].question + "</h1>");
-        for (var j = 0; j < questions[i].choices.length; j++) {
-            var newDiv = $("<div>");
-            newDiv.addClass("choices").attr("numIndex", i).text(questions[i].choices[j]);
-            $(".questions").append(newDiv);
-        }
-
-
-
-    }
-
-    $(".happy").on("click", function () {
-        var userChoice = parseInt($(this).att("numIndex"));
-        if (userChoice === questions[questionIndex].answer) {
-            rightAnswers++;
-
-        } else {
-            wrongAnswers++;
-
-        }
-        questionIndex++;
-    });
-
-
-
-
-};
-
-
-
-afterQuestion(questionIndex);
-$(".correct").html("<h1>" + rightAnswers + "<h1>");
-$(".incorrect").html("<h1>" + wrongAnswers + "<h1>");
-
-
-
-});
-        
-
-        
-
-
-
-    </script>
-    
-</body>
-
-
-
+  </body>
 </html>
